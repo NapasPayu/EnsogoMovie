@@ -1,5 +1,14 @@
 package com.ensogo.movie.details;
 
+import android.app.Activity;
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
+import android.text.InputType;
+import android.text.TextUtils;
+import android.view.View;
+import android.widget.EditText;
+
+import com.ensogo.movie.R;
 import com.ensogo.movie.entities.Movie;
 import com.ensogo.movie.entities.Review;
 import com.ensogo.movie.entities.Video;
@@ -18,9 +27,11 @@ public class MovieDetailsPresenter implements IMovieDetailsPresenter
     private IMovieDetailsView mMovieDetailsView;
     private IMovieDetailsInteractor mMovieDetailsInteractor;
     private IFavoritesInteractor mFavoritesInteractor;
+    private Activity mActivity;
 
-    public MovieDetailsPresenter(IMovieDetailsView movieDetailsView)
+    public MovieDetailsPresenter(Activity activity, IMovieDetailsView movieDetailsView)
     {
+        mActivity = activity;
         mMovieDetailsView = movieDetailsView;
         mMovieDetailsInteractor = new MovieDetailsInteractor();
         mFavoritesInteractor = new FavoritesInteractor();
@@ -109,8 +120,62 @@ public class MovieDetailsPresenter implements IMovieDetailsPresenter
             mMovieDetailsView.showUnFavorited();
         } else
         {
-            mFavoritesInteractor.setFavorite(movie);
-            mMovieDetailsView.showFavorited();
+            showFavoriteInputDialog(movie);
         }
+    }
+
+    private void showFavoriteInputDialog(final Movie movie)
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+        builder.setTitle(String.format(mActivity.getString(R.string.favorite_input_title), movie.getTitle()));
+
+        final EditText input = new EditText(mActivity);
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        builder.setView(input);
+
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //Do nothing here because we override this button later to change the close behaviour.
+            }
+        });
+
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        final AlertDialog dialog = builder.create();
+        dialog.show();
+
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                String inputText = input.getText().toString();
+                if(TextUtils.isEmpty(inputText)) {
+                    showErrorDialog();
+                }else {
+                    dialog.dismiss();
+                    movie.setFavoriteReason(inputText);
+                    mFavoritesInteractor.setFavorite(movie);
+                    mMovieDetailsView.showFavorited();
+                }
+            }
+        });
+    }
+
+    private void showErrorDialog()
+    {
+        new AlertDialog.Builder(mActivity)
+                .setTitle(mActivity.getString(R.string.error))
+                .setMessage(mActivity.getString(R.string.favorite_input_error))
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {}
+                })
+                .show();
     }
 }

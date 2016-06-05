@@ -12,6 +12,7 @@ public class Movie implements Parcelable
     private String backdropPath;
     private String title;
     private double voteAverage;
+    private String favoriteReason;
 
     public Movie()
     {
@@ -27,6 +28,7 @@ public class Movie implements Parcelable
         backdropPath = in.readString();
         title = in.readString();
         voteAverage = in.readDouble();
+        favoriteReason = in.readString();
     }
 
     public static final Creator<Movie> CREATOR = new Creator<Movie>()
@@ -114,6 +116,16 @@ public class Movie implements Parcelable
         this.voteAverage = voteAverage;
     }
 
+    public String getFavoriteReason()
+    {
+        return favoriteReason;
+    }
+
+    public void setFavoriteReason(String favoriteReason)
+    {
+        this.favoriteReason = favoriteReason;
+    }
+
     @Override
     public int describeContents()
     {
@@ -130,5 +142,6 @@ public class Movie implements Parcelable
         parcel.writeString(backdropPath);
         parcel.writeString(title);
         parcel.writeDouble(voteAverage);
+        parcel.writeString(favoriteReason);
     }
 }

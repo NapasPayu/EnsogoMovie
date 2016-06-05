@@ -12,4 +12,10 @@
     <string name="favorites">Favorites</string>
     <string name="highest_rated">Highest Rated</string>
     <string name="most_popular">Most Popular</string>
+    <string name="favorite_input_title">Why do you like %s?</string>
+    <string name="favorite_input_error">Please fill in the form</string>
+    <string name="favorite_message_title">The reason why you like %s</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="error">Error</string>
 </resources>

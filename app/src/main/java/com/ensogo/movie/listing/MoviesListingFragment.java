@@ -132,6 +132,11 @@ public class MoviesListingFragment extends Fragment implements IMoviesListingVie
     }
 
     @Override
+    public void onFavoriteInfoClicked(String movieTitle, String favoriteMessage) {
+        mCallback.onFavoriteInfoClicked(movieTitle, favoriteMessage);
+    }
+
+    @Override
     public void onDestroyView()
     {
         if (mMoviesSubscription != null && !mMoviesSubscription.isUnsubscribed())
@@ -153,5 +158,6 @@ public class MoviesListingFragment extends Fragment implements IMoviesListingVie
     {
         void onMoviesLoaded(Movie movie);
         void onMovieClicked(Movie movie);
+        void onFavoriteInfoClicked(String movieTitle, String favoriteMessage);
     }
 }

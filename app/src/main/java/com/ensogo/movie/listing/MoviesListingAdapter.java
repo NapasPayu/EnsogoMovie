@@ -16,6 +16,8 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.ensogo.movie.R;
 import com.ensogo.movie.entities.Movie;
+import com.ensogo.movie.entities.SortType;
+import com.ensogo.movie.sorting.SortingOptionStore;
 
 import java.util.List;
 
@@ -29,6 +31,7 @@ public class MoviesListingAdapter extends RecyclerView.Adapter<MoviesListingAdap
     {
         public TextView mMovieName;
         public ImageView mMoviePoster;
+        public ImageView mFavoriteReason;
         public View mTitleBackground;
         public Movie mMovie;
 
@@ -37,13 +40,17 @@ public class MoviesListingAdapter extends RecyclerView.Adapter<MoviesListingAdap
             super(root);
             mMovieName = (TextView) root.findViewById(R.id.movie_name);
             mMoviePoster = (ImageView) root.findViewById(R.id.movie_poster);
+            mFavoriteReason = (ImageView) root.findViewById(R.id.favorite_reason);
             mTitleBackground = root.findViewById(R.id.title_background);
         }
 
         @Override
-        public void onClick(View view)
-        {
-            mMoviesView.onMovieClicked(mMovie);
+        public void onClick(View view) {
+            if (view.getId() == mFavoriteReason.getId()) {
+                mMoviesView.onFavoriteInfoClicked(mMovie.getTitle(), mMovie.getFavoriteReason());
+            } else {
+                mMoviesView.onMovieClicked(mMovie);
+            }
         }
     }
 
@@ -68,6 +75,16 @@ public class MoviesListingAdapter extends RecyclerView.Adapter<MoviesListingAdap
         holder.itemView.setOnClickListener(holder);
         holder.mMovie = mMovies.get(position);
         holder.mMovieName.setText(holder.mMovie.getTitle());
+        if(isFavoritesOptionSelected())
+        {
+            holder.mFavoriteReason.setVisibility(View.VISIBLE);
+            holder.mFavoriteReason.setOnClickListener(holder);
+        }
+        else
+        {
+            holder.mFavoriteReason.setVisibility(View.GONE);
+        }
+
         Glide.with(mContext).load(holder.mMovie
                 .getPosterPath()).asBitmap()
                 .diskCacheStrategy(DiskCacheStrategy.RESULT)
@@ -95,5 +112,12 @@ public class MoviesListingAdapter extends RecyclerView.Adapter<MoviesListingAdap
     public int getItemCount()
     {
         return mMovies.size();
+    }
+
+    private boolean isFavoritesOptionSelected()
+    {
+        SortingOptionStore sortingOptionStore = new SortingOptionStore();
+        int selectedOption = sortingOptionStore.getSelectedOption();
+        return selectedOption == SortType.FAVORITES.getValue() ? true : false;
     }
 }

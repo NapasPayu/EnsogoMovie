@@ -10,4 +10,5 @@ public interface IMoviesListingView
     void loadingStarted();
     void loadingFailed(String errorMessage);
     void onMovieClicked(Movie movie);
+    void onFavoriteInfoClicked(String movieTitle, String favoriteMessage);
 }

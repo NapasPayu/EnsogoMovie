@@ -71,7 +71,7 @@ public class MovieDetailsFragment extends Fragment implements IMovieDetailsView,
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        mMovieDetailsPresenter = new MovieDetailsPresenter(this);
+        mMovieDetailsPresenter = new MovieDetailsPresenter(getActivity(), this);
     }
 
     @Override
@@ -227,6 +227,7 @@ public class MovieDetailsFragment extends Fragment implements IMovieDetailsView,
         {
             mFavorite.setImageDrawable(getContext().getResources().getDrawable(R.drawable.ic_favorite_border_white_24dp));
         }
+        mFavorite.setOnClickListener(this);
     }
 
     @Override
@@ -239,6 +240,7 @@ public class MovieDetailsFragment extends Fragment implements IMovieDetailsView,
         {
             mFavorite.setImageDrawable(getContext().getResources().getDrawable(R.drawable.ic_favorite_white_24dp));
         }
+        mFavorite.setOnClickListener(this);
     }
 
     @Override
